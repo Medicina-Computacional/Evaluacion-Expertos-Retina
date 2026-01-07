@@ -32,9 +32,17 @@ pip install gunicorn
 # Setup Database
 # Delete old database to start completely fresh
 echo "Removing old database..."
-rm -f "$PROJECT_ROOT/backend/app.db"
-rm -f "$PROJECT_ROOT/backend/app.db-shm"
-rm -f "$PROJECT_ROOT/backend/app.db-wal"
+rm -f "$PROJECT_ROOT/backend/evaluation.db"
+rm -f "$PROJECT_ROOT/backend/evaluation.db-shm"
+rm -f "$PROJECT_ROOT/backend/evaluation.db-wal"
+
+# Verify deletion
+if [ -f "$PROJECT_ROOT/backend/evaluation.db" ]; then
+    echo "Warning: Failed to delete evaluation.db"
+    exit 1
+else
+    echo "Database successfully removed"
+fi
 
 # Using the provided script to create fresh database with users and cases
 if [ -f "populate_db.py" ]; then
