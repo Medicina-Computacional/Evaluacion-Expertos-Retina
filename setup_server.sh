@@ -10,7 +10,10 @@ sudo apt update && sudo apt upgrade -y
 
 # Install Dependencies
 echo "Installing dependencies..."
-sudo apt install -y python3-pip python3-venv nodejs npm nginx git acl
+# Add NodeSource repo for Node.js 20 (Required for Vite 7+)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y python3-pip python3-venv nodejs nginx git acl
+# npm is included in nodejs package from nodesource
 
 # Verify Installations
 python3 --version
