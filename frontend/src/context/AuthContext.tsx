@@ -30,7 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = async (email: string, password: string) => {
-        const formData = new FormData();
+        // Use URLSearchParams for proper application/x-www-form-urlencoded encoding
+        const formData = new URLSearchParams();
         formData.append('username', email);
         formData.append('password', password);
 

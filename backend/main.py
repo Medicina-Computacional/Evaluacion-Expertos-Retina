@@ -13,15 +13,28 @@ app = FastAPI(
 )
 
 # CORS configuration
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+# For production deployment, use regex to allow any origin since frontend and backend are on same server
+# For local development, can set CORS_ORIGINS env var to specific origins
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if cors_origins_env and cors_origins_env != "*":
+    # Use specific origins if provided
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins_env.split(","),
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    # Allow all origins using regex (for production on AWS with unknown IP)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=r"https?://.*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Include routers
 app.include_router(auth.router)

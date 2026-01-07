@@ -46,9 +46,21 @@ fi
 
 # Using the provided script to create fresh database with users and cases
 if [ -f "populate_db.py" ]; then
+    echo "Running populate_db.py to create fresh database..."
     python3 populate_db.py
+    if [ $? -ne 0 ]; then
+        echo "Error: populate_db.py failed to run successfully"
+        exit 1
+    fi
+    # Verify database was created
+    if [ ! -f "evaluation.db" ]; then
+        echo "Error: Database file was not created"
+        exit 1
+    fi
+    echo "Database created successfully at $PROJECT_ROOT/backend/evaluation.db"
 else
-    echo "Warning: populate_db.py not found in backend directory"
+    echo "Error: populate_db.py not found in backend directory"
+    exit 1
 fi
 
 # Setup Frontend
