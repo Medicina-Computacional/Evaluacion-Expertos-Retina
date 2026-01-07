@@ -30,8 +30,13 @@ pip install -r requirements.txt
 pip install gunicorn
 
 # Setup Database
-# Using the provided script, but skipping if no images (assuming images might be uploaded manually later or pulled)
-# For now just running it to ensure DB is created
+# Delete old database to start completely fresh
+echo "Removing old database..."
+rm -f "$PROJECT_ROOT/backend/app.db"
+rm -f "$PROJECT_ROOT/backend/app.db-shm"
+rm -f "$PROJECT_ROOT/backend/app.db-wal"
+
+# Using the provided script to create fresh database with users and cases
 if [ -f "populate_db.py" ]; then
     python3 populate_db.py
 else
