@@ -27,6 +27,8 @@ def populate_database():
         db.query(Case).delete()
         db.commit()
         
+        cases_created = 0
+        
         # Create Admin User
         admin = db.query(User).filter(User.email == "admin@example.com").first()
         if not admin:
