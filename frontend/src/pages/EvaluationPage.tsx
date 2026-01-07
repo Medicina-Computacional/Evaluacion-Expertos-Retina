@@ -141,11 +141,14 @@ export default function EvaluationPage() {
                                     />
                                     {/* Overlay Mask */}
                                     {showOverlay && (
-                                        <img
-                                            src={currentCase.maskUrl}
-                                            alt="Máscara de segmentación"
-                                            className="absolute inset-0 w-full h-full object-contain mix-blend-screen opacity-70 transition-opacity"
-                                        />
+                                        <div className="absolute inset-0 transition-opacity duration-300 ease-in-out">
+                                            <img
+                                                src={currentCase.maskUrl}
+                                                alt="Máscara de segmentación"
+                                                className="w-full h-full object-contain"
+                                                style={{ opacity: 0.8 }}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             ) : (
@@ -155,11 +158,13 @@ export default function EvaluationPage() {
 
                         {/* Image Info */}
                         <div className="px-6 py-3 border-t border-gray-800 flex items-center justify-between text-sm text-clinical-muted bg-uabc-dark/30">
-                            <span className="font-mono text-uabc-gold">Caso: {currentCase?.id?.split('-')[0] || '-'}</span>
+                            <span className="font-mono text-uabc-gold">
+                                Caso: {(currentCase?.metadata?.filename as string | undefined)?.split('.')[0] || (currentCase?.id?.split('-')[0] || '-')}
+                            </span>
                             <span className="flex items-center gap-3">
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500"></span> Microaneurismas</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500"></span> Exudados</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-purple-500"></span> Hemorragias</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#00FFFF' }}></span> Microaneurismas</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#0000FF' }}></span> Exudados</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#00FF00' }}></span> Hemorragias</span>
                             </span>
                         </div>
                     </div>

@@ -197,12 +197,19 @@ def export_evaluations(
     
     # Data
     for eval in evaluations:
+        # Determine case identifier
+        case_id_display = eval.case_id
+        if eval.case.case_metadata and "filename" in eval.case.case_metadata:
+            # Use filename without extension
+            filename = eval.case.case_metadata["filename"]
+            case_id_display = os.path.splitext(filename)[0]
+
         writer.writerow([
             eval.id,
             eval.user_id,
             eval.user.email,
             eval.user.name,
-            eval.case_id,
+            case_id_display,
             eval.q1_acceptability,
             eval.q2_confidence,
             eval.comments or "",

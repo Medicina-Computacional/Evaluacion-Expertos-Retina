@@ -29,7 +29,9 @@ app.include_router(evaluations.router)
 app.include_router(admin.router)
 
 # Serve static files (for local development - images)
-static_dir = os.path.join(os.path.dirname(__file__), "static")
+# Serve static files (the 'database' directory containing original_imgs and overlay_imgs)
+# We go up one level from 'backend' to root, then into 'database'
+static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "database"))
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
