@@ -43,14 +43,22 @@ npm run build
 
 # Configure Nginx
 echo "Configuring Nginx..."
-# We need to update the nginx.conf to point to the correct root if it was hardcoded too?
-# The nginx.conf has: root /home/ubuntu/Evaluacion-Expertos-Retina/frontend/dist;
-# We should SED replace it to match current path.
+# We need to update the nginx.conf to point to the correct root
 sed -i "s|/home/ubuntu/Evaluacion-Expertos-Retina|$PROJECT_ROOT|g" "$PROJECT_ROOT/nginx.conf"
 
 sudo cp "$PROJECT_ROOT/nginx.conf" /etc/nginx/sites-available/retina
 sudo ln -sf /etc/nginx/sites-available/retina /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
+
+# FIX PERMISSIONS: Ensure Nginx (www-data) can read the files
+echo "Fixing permissions for Nginx..."
+sudo chmod 755 /home/ubuntu
+sudo chmod 755 "$PROJECT_ROOT"
+# Recursively allow read/execute for others on the project
+sudo chmod -R o+rx "$PROJECT_ROOT"
+# Give ownership of dist to ubuntu but keep it readable
+sudo chown -R ubuntu:ubuntu "$PROJECT_ROOT"
+
 sudo systemctl restart nginx
 
 # Setup System Service for Backend (Gunicorn)
