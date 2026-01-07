@@ -22,6 +22,13 @@ chmod 400 "$KEY_PATH"
 # 2. Clone Repo on Server (Skip if exists)
 echo "Step 1: Setting up repository on server..."
 ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no $USER@$SERVER_IP << EOF
+    # Ensure Git is installed (required for cloning)
+    if ! command -v git &> /dev/null; then
+        echo "Git not found on server. Installing..."
+        sudo apt-get update -y
+        sudo apt-get install -y git
+    fi
+
     if [ ! -d "$REMOTE_DIR" ]; then
         git clone $REPO_URL $REMOTE_DIR
     else
