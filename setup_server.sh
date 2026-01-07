@@ -55,6 +55,11 @@ fi
 echo "Setting up frontend..."
 cd "$PROJECT_ROOT/frontend" || { echo "Frontend directory not found"; exit 1; }
 npm install
+
+# Set environment variable for production build
+echo "Creating .env.production for frontend build..."
+echo "VITE_API_URL=/api" > .env.production
+
 npm run build
 
 # Configure Nginx
