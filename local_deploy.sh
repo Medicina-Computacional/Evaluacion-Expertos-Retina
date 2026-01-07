@@ -29,12 +29,36 @@ ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no $USER@$SERVER_IP << EOF
         sudo apt-get install -y git
     fi
 
-    if [ ! -d "$REMOTE_DIR" ]; then
-        git clone $REPO_URL $REMOTE_DIR
+    # Logic to handle existing directory that might not be a git repo (failed previous clone)
+    if [ -d "$REMOTE_DIR" ]; then
+        if [ ! -d "$REMOTE_DIR/.git" ]; then
+            echo "Directory exists but is not a git repo. Attempting to recover..."
+            # Check if database exists inside (save images)
+            if [ -d "$REMOTE_DIR/database" ]; then
+                echo "Saving existing database images..."
+                mv "$REMOTE_DIR/database" ~/temp_database_backup
+            fi
+            
+            # Remove the broken directory
+            rm -rf "$REMOTE_DIR"
+            
+            # Clone fresh
+            git clone $REPO_URL $REMOTE_DIR
+            
+            # Restore images
+            if [ -d ~/temp_database_backup ]; then
+                echo "Restoring images..."
+                mkdir -p "$REMOTE_DIR/database"
+                mv ~/temp_database_backup/* "$REMOTE_DIR/database/"
+                rm -rf ~/temp_database_backup
+            fi
+        else
+            echo "Repo exists, pulling updates..."
+            cd $REMOTE_DIR
+            git pull origin main
+        fi
     else
-        echo "Repo already exists, pulling updates..."
-        cd $REMOTE_DIR
-        git pull origin main
+        git clone $REPO_URL $REMOTE_DIR
     fi
 EOF
 
