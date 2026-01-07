@@ -2,7 +2,8 @@
 import os
 import sys
 from sqlalchemy.orm import Session
-from database import SessionLocal, init_db, Case, engine
+from database import SessionLocal, init_db, Case, engine, User, UserRole
+from auth import get_password_hash
 
 def populate_database():
     print("Initializing database...")
@@ -26,8 +27,38 @@ def populate_database():
         db.query(Case).delete()
         db.commit()
         
+        # Create Admin User
+        admin = db.query(User).filter(User.email == "admin@example.com").first()
+        if not admin:
+            print("Creating admin user...")
+            admin = User(
+                email="admin@example.com",
+                name="Administrador",
+                password_hash=get_password_hash("admin123"),
+                role=UserRole.ADMIN
+            )
+            db.add(admin)
+            cases_created += 1  # Just to track activity
+        else:
+            print("Admin user already exists")
+
+        # Create Sample Evaluator
+        evaluator = db.query(User).filter(User.email == "evaluador@example.com").first()
+        if not evaluator:
+            print("Creating sample evaluator...")
+            evaluator = User(
+                email="evaluador@example.com",
+                name="Dr. Juan Pérez",
+                password_hash=get_password_hash("eval123"),
+                role=UserRole.EVALUATOR
+            )
+            db.add(evaluator)
+        else:
+            print("Evaluator user already exists")
+
+        db.commit()
+
         print("Scanning for image pairs...")
-        cases_created = 0
         
         # Iterate through original images
         for filename in os.listdir(original_dir):
