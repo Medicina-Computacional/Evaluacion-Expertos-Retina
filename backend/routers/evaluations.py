@@ -11,7 +11,8 @@ from auth import get_current_user
 router = APIRouter(prefix="/evaluations", tags=["Evaluations"])
 
 # S3 base URL (or local static URL for dev)
-S3_BASE_URL = os.getenv("S3_BASE_URL", "http://localhost:8000/static")
+# In production, Nginx serves /static; in dev with backend on :8000, use full URL
+S3_BASE_URL = os.getenv("S3_BASE_URL", "/static")
 
 
 @router.get("/next-case", response_model=Optional[CaseOut])
