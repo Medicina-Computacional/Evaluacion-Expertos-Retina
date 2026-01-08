@@ -47,7 +47,8 @@ fi
 # Using the provided script to create fresh database with users and cases
 if [ -f "populate_db.py" ]; then
     echo "Running populate_db.py to create fresh database..."
-    python3 populate_db.py
+    # CRITICAL FIX: Use venv python to match runtime bcrypt version
+    ./venv/bin/python populate_db.py
     if [ $? -ne 0 ]; then
         echo "Error: populate_db.py failed to run successfully"
         exit 1
