@@ -9,3 +9,5 @@ passlib[bcrypt]
 bcrypt==3.2.2
 mangum
 python-dotenv
+email-validator
+
